@@ -1,17 +1,39 @@
-import React from 'react';
-import { render } from 'react-dom';
-import Hello from './Hello';
+import React from "react";
+import { render } from "react-dom";
+import { Provider } from "react-redux";
+import { createStore } from "redux";
+import Odometer from "./Odometer";
+import Speedometer from "./Speedometer";
+import reducer from "./store";
+import updater from "./updater";
+
+const store = createStore(reducer);
 
 const styles = {
-  fontFamily: 'sans-serif',
-  textAlign: 'center',
+  fontFamily: "sans-serif",
+  textAlign: "center",
+  display: "flex",
+  justifyContent: "space-around"
 };
 
-const App = () => (
-  <div style={styles}>
-    <Hello name="CodeSandbox" />
-    <h2>Start editing to see some magic happen {'\u2728'}</h2>
-  </div>
-);
+class App extends React.Component {
+  componentDidMount() {
+    updater.start(store.dispatch);
+  }
 
-render(<App />, document.getElementById('root'));
+  render() {
+    return (
+      <div style={styles}>
+        <Speedometer />
+        <Odometer />
+      </div>
+    );
+  }
+}
+
+render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById("root")
+);
